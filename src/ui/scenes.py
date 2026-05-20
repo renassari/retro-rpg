@@ -78,7 +78,7 @@ def draw_explore(game):
             arcade.draw_circle_filled(
                 enemy.center_x + 20,
                 enemy.center_y + 60,
-                9,
+                12,
                 arcade.color.BLACK,
             )
             arcade.draw_text(
@@ -86,7 +86,7 @@ def draw_explore(game):
                 enemy.center_x + 20,
                 enemy.center_y + 55,
                 arcade.color.WHITE,
-                10,
+                14,
                 anchor_x="center",
             )
 
@@ -122,7 +122,7 @@ def draw_battle(game):
     else:
         game.enemy_list.draw()
 
-    draw_hp_bar(200, 410, game.player_hp, game.max_hp, arcade.color.GREEN)
+    draw_hp_bar(200, 410, game.player_hp, game.max_hp, arcade.color.RED)
     draw_hp_bar(600, 410, game.enemy_hp, game.enemy_max_hp, arcade.color.RED)
     draw_bp_bar(200, 395, game.bp, game.max_bp, arcade.color.CYAN)
 
