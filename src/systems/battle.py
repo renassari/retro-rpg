@@ -57,12 +57,10 @@ def _resolve_punch(game):
             shield_damage = int((damage * random.random()) * 2)
             game.enemy_hp -= shield_damage
             spawn_damage(game, game.enemy, shield_damage)
-            game.message = f"he shielded himself {shield_damage} damage"
             game.enemy_defense = False
         else:
             game.enemy_hp -= damage * 2
             spawn_damage(game, game.enemy, damage * 2, is_crit=True)
-            game.message = "you did -28 damage"
 
         game.player_buff_spell = False
 
@@ -71,12 +69,10 @@ def _resolve_punch(game):
             shield_damage = int(damage * random.random())
             game.enemy_hp -= shield_damage
             spawn_damage(game, game.enemy, shield_damage)
-            game.message = f"he shielded himself {shield_damage} damage"
             game.enemy_defense = False
         else:
             game.enemy_hp -= damage
             spawn_damage(game, game.enemy, damage)
-            game.message = "you did -14 damage"
 
 
 def _resolve_magic(game):
@@ -111,12 +107,10 @@ def _apply_offensive_magic(game, damage, message, buff_doubles=True):
             shield_damage = int((damage * random.random()) * 2)
             game.enemy_hp -= shield_damage
             spawn_damage(game, game.enemy, shield_damage)
-            game.message = f"he shielded himself {shield_damage} damage"
             game.enemy_defense = False
         else:
             game.enemy_hp -= damage * 2
             spawn_damage(game, game.enemy, damage * 2, is_crit=True)
-            game.message = message
 
         game.player_buff_spell = False
 
@@ -125,12 +119,10 @@ def _apply_offensive_magic(game, damage, message, buff_doubles=True):
             shield_damage = int(damage * random.random())
             game.enemy_hp -= shield_damage
             spawn_damage(game, game.enemy, shield_damage)
-            game.message = f"he shielded himself {shield_damage} damage"
             game.enemy_defense = False
         else:
             game.enemy_hp -= damage
             spawn_damage(game, game.enemy, damage)
-            game.message = message
 
 
 def _resolve_item(game):
@@ -205,13 +197,11 @@ def _enemy_debuffed_turn(game):
         damage = int(20 * random.random())
         game.player_hp -= damage
         spawn_damage(game, game.player, damage)
-        game.message = f"Crit damage {damage}"
 
     elif luck <= 0.6:
         damage = int(10 * random.random())
         game.player_hp -= damage
         spawn_damage(game, game.player, damage)
-        game.message = f"{damage}"
 
     elif luck <= 0.9:
         game.enemy_defense = True
@@ -228,12 +218,10 @@ def _enemy_normal_turn(game):
     if luck <= 0.2:
         game.player_hp -= 20
         spawn_damage(game, game.player, 20)
-        game.message = "Crit damage -20HP"
 
     elif luck <= 0.6:
         game.player_hp -= 10
         spawn_damage(game, game.player, 10)
-        game.message = "-10 damage"
 
     elif luck <= 0.8:
         game.enemy_defense = True
