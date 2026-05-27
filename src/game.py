@@ -35,7 +35,9 @@ ENEMY_BATTLE_POS = (600, 320)
 
 MAPS = {
     "beach": "assets/images/backgrounds/beach.png",
+    "beach_2": "assets/images/backgrounds/beach_2.png",
     "forest_1": "assets/images/backgrounds/forrest_start.png",
+    "forest_2": "assets/images/backgrounds/forest_2.png",
 }
 
 MAP_SPAWNS = {
