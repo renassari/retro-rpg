@@ -30,6 +30,7 @@ from src.utils.textures import load_texture_from_url
 
 
 PLAYER_SPAWN = (20, 250)
+PLAYER_BATTLE_SPAWN = (200, 320)
 ENEMY_BATTLE_POS = (600, 320)
 
 MAPS = {
@@ -202,7 +203,7 @@ class Game(arcade.Window):
         self.player.center_x, self.player.center_y = PLAYER_SPAWN
 
     def start_battle_positions(self):
-        self.player.center_x, self.player.center_y = PLAYER_SPAWN
+        self.player.center_x, self.player.center_y = PLAYER_BATTLE_SPAWN
         if self.enemy is not None:
             self.enemy.center_x, self.enemy.center_y = ENEMY_BATTLE_POS
 
