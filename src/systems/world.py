@@ -8,7 +8,7 @@ from PIL import Image
 from src.config import BASE_URL
 
 
-def load_map(width, height, path="assets/images/backgrounds/hintergrund.png"):
+def load_map(width, height, path="assets/images/backgrounds/beach.png"):
     """Download the background image and resize it to the screen dimensions.
 
     Returns (PIL.Image, pixel-access) so callers can sample pixels for

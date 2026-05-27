@@ -60,7 +60,7 @@ class Game(arcade.Window):
 
     def _load_textures(self):
         self.background1 = load_texture_from_url(
-            BASE_URL + "assets/images/backgrounds/hintergrund.png"
+            BASE_URL + "assets/images/backgrounds/beach.png"
         )
         self.gameover = load_texture_from_url(
             BASE_URL + "assets/images/backgrounds/gameover.png"
@@ -90,6 +90,19 @@ class Game(arcade.Window):
 
     def _init_world(self):
         self.map_img, self.map_pixels = world.load_map(self.width, self.height)
+
+    def change_map(self, background_path):
+
+        self.map_img, self.map_pixels = world.load_map(
+            self.width,
+            self.height,
+            background_path
+        )
+
+        self.background1 = load_texture_from_url(
+            BASE_URL + background_path
+        )
+
 
     def _init_sprites(self):
         self.player = arcade.Sprite(self._player_texture, 2.5)
@@ -222,6 +235,15 @@ class Game(arcade.Window):
             self.map_img, self.map_pixels, self.player.center_x, new_y
         ):
             self.player.center_y = new_y
+
+        # unten aus der map
+        if self.player.center_y < 0:
+            self.change_map(
+                "assets/images/backgrounds/cave.png"
+            )
+
+            # spieler oben spawnen
+            self.player.center_y = self.height - 100
 
     def on_key_press(self, key, modifiers):
         self.keys_held.add(key)
