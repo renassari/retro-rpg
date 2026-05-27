@@ -43,8 +43,23 @@ MAPS = {
 MAP_SPAWNS = {
     "beach": (200, 40),
     "forest_1": (200, 800),
+    "beach_2": (300,800),
+    "forest_2": (750, 300),
 }
-
+TRANSITIONS = {
+    #bottom
+    ("beach", "forest_1", "bottom"): {"keep_x": True, "fixed_y" : 800},
+    ("beach_2", "forest_2", "bottom"): {"keep_x": True, "fixed_y" : 800},
+    #top
+    ("forest_1", "beach", "top"): {"keep_x": True, "fixed_y" : 10},
+    ("forest_2", "beach_2", "top"): {"keep_x": True, "fixed_y" : 10},
+    #right
+    ("forest_1", "forest_2", "right"): {"keep_y": True, "fixed_x": 0},
+    ("beach", "beach_2", "right"): {"keep_y": True, "fixed_x" : 0},
+    #left
+    ("forest_2", "forest_1", "left"): {"keep_y": True, "fixed_x": 1550},
+    ("beach_2", "beach", "left"): {"keep_y": True, "fixed_x" : 1550},
+}
 
 class Game(arcade.Window):
     def __init__(self):
@@ -61,6 +76,9 @@ class Game(arcade.Window):
         self.keys_held = set()
 
     def _init_state(self):
+        self.last_x = 0
+        self.last_y = 0
+        self.last_map = None
         self.dead_enemies = set()
         self.state = "explore"
         self.dialog_index = 0
@@ -109,6 +127,7 @@ class Game(arcade.Window):
         self.map_img, self.map_pixels = world.load_map(self.width, self.height)
 
     def change_map(self, map_name):
+        self.last_map = self.current_map
         self.current_map = map_name
 
         background_path = MAPS[map_name]
@@ -122,6 +141,47 @@ class Game(arcade.Window):
         self.background1 = load_texture_from_url(BASE_URL + background_path)
 
         self._spawn_enemies_for_map()
+
+    def go_to_map(self, new_map, direction):
+        key = (self.current_map, new_map, direction)
+
+        self.last_map = self.current_map
+        self.current_map = new_map
+
+        self.change_map(new_map)
+
+        transition = TRANSITIONS.get(key)
+
+        if transition is None:
+            return
+
+        if transition.get("keep_x"):
+            pass
+        elif "fixed_x" in transition:
+            self.player.center_x = transition["fixed_x"]
+
+        if transition.get("keep_y"):
+            pass
+        elif "fixed_y" in transition:
+            self.player.center_y = transition["fixed_y"]
+
+    def _apply_transition_spawn(self):
+        key = (self.last_map, self.current_map)
+
+        if key in TRANSITIONS:
+            self.player.center_x, self.player.center_y = TRANSITIONS[key]
+        else:
+            self.player.center_x, self.player.center_y = PLAYER_SPAWN
+
+    def _set_spawn_after_map_change(self):
+        if self.last_map == "beach" and self.current_map == "forest_1":
+            self.player.center_x, self.player.center_y = (200, 800)
+
+        elif self.last_map == "forest_1" and self.current_map == "beach":
+            self.player.center_x, self.player.center_y = (200, 40)
+
+        else:
+            self.player.center_x, self.player.center_y = PLAYER_SPAWN
 
 
     def _init_sprites(self):
@@ -284,30 +344,64 @@ class Game(arcade.Window):
         ):
             self.player.center_y = new_y
 
-
-
-        # unten aus der map
-        # unten raus
-        # unten raus
+        #bottom
         if self.player.center_y < 0 and self.current_map == "beach":
             self.map_switch_lock = True
             self.fade = 1.0
 
-            self.change_map("forest_1")
-            self.player.center_x, self.player.center_y = MAP_SPAWNS[self.current_map]
+            self.go_to_map("forest_1", "bottom")
 
+            self.map_switch_lock = False
+        if self.player.center_y < 0 and self.current_map == "beach_2":
+            self.map_switch_lock = True
+            self.fade = 1.0
+            self.go_to_map("forest_2", "bottom")
             self.map_switch_lock = False
 
 
-        # oben raus
-        elif self.player.center_y > self.height and self.current_map == "forest_1":
+        #top
+        if self.player.center_y > self.height and self.current_map == "forest_1":
             self.map_switch_lock = True
             self.fade = 1.0
 
-            self.change_map("beach")
-            self.player.center_x, self.player.center_y = MAP_SPAWNS[self.current_map]
+            self.go_to_map("beach", "top")
 
             self.map_switch_lock = False
+        if self.player.center_y > self.height and self.current_map == "forest_2":
+            self.map_switch_lock = True
+            self.fade = 1.0
+            self.go_to_map("beach_2", "top")
+            self.map_switch_lock = False
+        #right
+
+        if self.player.center_x > 1550 and self.current_map == "forest_1":
+            self.map_switch_lock = True
+
+            self.fade = 1.0
+
+            self.go_to_map("forest_2", "right")
+
+            self.map_switch_lock = False
+        if self.player.center_x > 1550 and self.current_map == "beach":
+            self.map_switch_lock = True
+            self.fade = 1.0
+            self.go_to_map("beach_2", "right")
+            self.map_switch_lock = False
+        #left
+        if self.player.center_x < 0 and self.current_map == "forest_2":
+            self.map_switch_lock = True
+
+            self.fade = 1.0
+
+            self.go_to_map("forest_1", "left")
+
+            self.map_switch_lock = False
+        if self.player.center_x < 0 and self.current_map == "beach_2":
+            self.map_switch_lock = True
+            self.fade = 1.0
+            self.go_to_map("beach", "left")
+            self.map_switch_lock = False
+
 
 
     def on_key_press(self, key, modifiers):
