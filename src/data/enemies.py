@@ -1,15 +1,14 @@
 """Enemy stat sheets and their texture paths (relative to BASE_URL)."""
 
 ENEMIES = {
-    "Köpek Franz": {"xp": 100, "hp": 100},
-    "Altunyarrak": {"xp": 20, "hp": 150},
+    "Köpek Franz": {"xp": 100, "hp": 100,"loot": "Key Share"},
+    "Altunyarrak": {"xp": 20, "hp": 150, "loot": "Key Share"},
 }
 
 ENEMY_TEXTURE_PATHS = {
     "Köpek Franz": "assets/images/characters/Franz.png",
     "Altunyarrak": "assets/images/characters/emre.png",
 }
-
 
 INITIAL_ENEMY_SPAWNS = [
     ("franz_1","Köpek Franz", 400, 200, "beach"),

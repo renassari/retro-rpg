@@ -11,6 +11,7 @@ from src.ui.menus import (
     draw_magic_popup,
     draw_main_battle_menu,
 )
+from src.data.items import ITEM_NAMES
 
 
 def draw_background(game):
@@ -177,6 +178,91 @@ def draw_scene(game):
         return
 
     draw_background(game)
+
+    if game.state == "pause":
+        # Dark overlay
+        arcade.draw_lrbt_rectangle_filled(
+            0,
+            game.width,
+            0,
+            game.height,
+            (0, 0, 0, 200)
+        )
+
+        # Title
+        arcade.draw_text(
+            "PAUSE MENÜ",
+            game.width // 2,
+            game.height - 80,
+            arcade.color.WHITE,
+            30,
+            anchor_x="center"
+        )
+
+        # HP / MP
+        arcade.draw_text(
+            f"HP: {game.player_hp}/{game.max_hp}",
+            100,
+            game.height - 150,
+            arcade.color.RED,
+            20
+        )
+
+        arcade.draw_text(
+            f"MP: {game.bp}/{game.max_bp}",
+            100,
+            game.height - 190,
+            arcade.color.BLUE,
+            20
+        )
+
+        # LEFT SIDE: INVENTORY
+        arcade.draw_text(
+            "Inventory",
+            100,
+            game.height - 250,
+            arcade.color.WHITE,
+            20
+        )
+
+        y_items = game.height - 290
+
+        for i, item in enumerate(ITEM_NAMES):
+            prefix = "> " if i == game.pause_selected else ""
+
+            arcade.draw_text(
+                f"{prefix}{item} x{game.inventory.get(item, 0)}",
+                100,
+                y_items,
+                arcade.color.WHITE,
+                18
+            )
+
+            y_items -= 30
+
+        # RIGHT SIDE: QUEST ITEMS
+        arcade.draw_text(
+            "Quest Items",
+            500,
+            game.height - 250,
+            arcade.color.YELLOW,
+            20
+        )
+
+        y_quest = game.height - 290
+
+        for item, amount in game.quest_items.items():
+            arcade.draw_text(
+                f"{item} x{amount}",
+                500,
+                y_quest,
+                arcade.color.WHITE,
+                18
+            )
+
+            y_quest -= 30
+
+        return
 
     if game.state == "explore":
         draw_explore(game)

@@ -243,6 +243,11 @@ class Game(arcade.Window):
         self.item_scroll = 0
         self.visible_item = 3
 
+        self.inventory = dict(INITIAL_INVENTORY)
+
+        self.quest_items = {}
+        self.pause_selected = 0
+
     def spawn_enemy(self, enemy_id, name, x, y, map_name):
         enemy = arcade.Sprite()
         enemy.texture = self.enemy_textures[name]
@@ -409,6 +414,47 @@ class Game(arcade.Window):
 
         if self.state == "level_up" and key == arcade.key.SPACE:
             self.state = "level_choice"
+            return
+
+        if key == arcade.key.ESCAPE:
+            if self.state == "explore":
+                self.state = "pause"
+            elif self.state == "pause":
+                self.state = "explore"
+            return
+
+        if self.state == "pause":
+
+            if key == arcade.key.UP:
+                self.pause_selected = (
+                                              self.pause_selected - 1
+                                      ) % len(ITEM_NAMES)
+
+            elif key == arcade.key.DOWN:
+                self.pause_selected = (
+                                              self.pause_selected + 1
+                                      ) % len(ITEM_NAMES)
+
+            elif key == arcade.key.SPACE:
+
+                item = ITEM_NAMES[self.pause_selected]
+
+                if self.inventory.get(item, 0) > 0:
+
+                    if item == "small Health potion":
+                        self.player_hp = min(
+                            self.max_hp,
+                            self.player_hp + 30
+                        )
+
+                    elif item == "small Mana potion":
+                        self.bp = min(
+                            self.max_bp,
+                            self.bp + 10
+                        )
+
+                    self.inventory[item] -= 1
+
             return
 
         if self.state == "level_choice":

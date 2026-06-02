@@ -1,6 +1,6 @@
 """Item, magic spell, and level-up icon definitions."""
 
-ITEM_NAMES = ["small Mana potion", "small Health potion", "Chug Chug"]
+ITEM_NAMES = ["small Mana potion", "small Health potion", "Chug Chug","Key Share","castle key"]
 
 INITIAL_INVENTORY = {
     "small Mana potion": 5,
@@ -12,6 +12,8 @@ ITEM_TEXTURE_PATHS = {
     "small Mana potion": "assets/images/items/SmallManaPotion.png",
     "small Health potion": "assets/images/items/SmallHealPotion.png",
     "Chug Chug": "assets/images/items/mix.png",
+    "Key Share": "assets/images/items/mix.png",
+    "castle key": "assets/images/items/mix.png",
 }
 
 

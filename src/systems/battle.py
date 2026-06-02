@@ -159,6 +159,13 @@ def _check_battle_end(game):
         if game.current_enemy_id is not None:
             game.dead_enemies.add(game.current_enemy_id)
 
+        loot = ENEMIES[game.current_enemy].get("loot")
+
+        if loot:
+            game.quest_items[loot] = (
+                    game.quest_items.get(loot, 0) + 1
+            )
+
         xp_gain = ENEMIES[game.current_enemy]["xp"]
         game.player_xp += xp_gain
         game.message = f"+{xp_gain} XP"
