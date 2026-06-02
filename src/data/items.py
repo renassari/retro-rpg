@@ -1,7 +1,7 @@
 """Item, magic spell, and level-up icon definitions."""
 
 ITEM_NAMES = ["small Mana potion", "small Health potion", "Chug Chug"]
-QUEST_ITEM_NAMES = ["Key Share", "Castle Key"]
+QUEST_ITEM_NAMES = ["Key Shard", "Castle Key"]
 
 INITIAL_INVENTORY = {
     "small Mana potion": 5,
