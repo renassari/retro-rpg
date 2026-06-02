@@ -224,7 +224,7 @@ def draw_scene(game):
             "Inventory",
             100,
             game.height - 250,
-            arcade.color.WHITE,
+            arcade.color.YELLOW,
             20
         )
 
