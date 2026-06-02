@@ -152,7 +152,7 @@ def _resolve_escape(game):
         game.message = "Ran away!"
 
 def check_castle_key(game):
-    if game.quest_items.get("Key Shard", 0) >= 4 and game.quest_items.get("Castle Key", 0) == 0:
+    if game.quest_items.get("Key Shard", 0) >= 2 and game.quest_items.get("Castle Key", 0) == 0:
         game.quest_items["Castle Key"] = 1
         game.quest_items["Key Shard"] = 0
 
