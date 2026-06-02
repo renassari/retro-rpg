@@ -11,7 +11,10 @@ from src.ui.menus import (
     draw_magic_popup,
     draw_main_battle_menu,
 )
-from src.data.items import ITEM_NAMES
+from src.data.items import (
+    ITEM_NAMES,
+    QUEST_ITEM_NAMES,
+)
 
 
 def draw_background(game):

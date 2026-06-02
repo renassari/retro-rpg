@@ -151,6 +151,10 @@ def _resolve_escape(game):
         game.state = "explore"
         game.message = "Ran away!"
 
+def check_castle_key(game):
+    if game.quest_items.get("Key Share", 0) >= 4 and game.quest_items.get("Castle Key", 0) == 0:
+        game.quest_items["Castle Key"] = 1
+        game.quest_items["Key Share"] = 0
 
 def _check_battle_end(game):
     if game.enemy_hp <= 0:
@@ -164,7 +168,9 @@ def _check_battle_end(game):
         if loot:
             game.quest_items[loot] = (
                     game.quest_items.get(loot, 0) + 1
+
             )
+            check_castle_key(game)
 
         xp_gain = ENEMIES[game.current_enemy]["xp"]
         game.player_xp += xp_gain
