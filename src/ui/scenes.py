@@ -194,7 +194,7 @@ def draw_scene(game):
 
         # Title
         arcade.draw_text(
-            "PAUSE MENÜ",
+            "pause menu",
             game.width // 2,
             game.height - 80,
             arcade.color.WHITE,
@@ -221,7 +221,7 @@ def draw_scene(game):
 
         # LEFT SIDE: INVENTORY
         arcade.draw_text(
-            "Inventory",
+            "Usable Items",
             100,
             game.height - 250,
             arcade.color.YELLOW,
