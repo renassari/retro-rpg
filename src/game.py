@@ -92,6 +92,9 @@ class Game(arcade.Window):
         self.current_map = "beach"
         self.map_switch_lock = False
         self.fade = 0
+        self.forest2_unlocked = False
+        self.message_specific = ""
+        self.message_specific_timer = 0
 
     def _load_textures(self):
         self.background1 = load_texture_from_url(
@@ -247,6 +250,8 @@ class Game(arcade.Window):
 
         self.quest_items = {}
         self.pause_selected = 0
+        self.use_key_menu = False
+        self.use_key_selected = 0
 
     def spawn_enemy(self, enemy_id, name, x, y, map_name):
         enemy = arcade.Sprite()
@@ -291,6 +296,61 @@ class Game(arcade.Window):
             )
 
             self.fade -= 0.05
+        if self.message_specific:
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(
+                    self.width / 2,
+                    50,
+                    self.width - 40,
+                    80
+                ),
+                (0, 0, 0, 180)
+            )
+
+            arcade.draw_text(
+                self.message_specific,
+                40,
+                35,
+                arcade.color.WHITE,
+                24
+            )
+        if self.use_key_menu:
+            arcade.draw_rect_filled(
+                arcade.rect.XYWH(
+                    self.width / 2,
+                    self.height / 2,
+                    500,
+                    200
+                ),
+                (0, 0, 0, 220)
+            )
+
+            arcade.draw_text(
+                "Use the Castle Key?",
+                self.width / 2 - 120,
+                self.height / 2 + 40,
+                arcade.color.WHITE,
+                24
+            )
+
+            yes = "> Yes" if self.use_key_selected == 0 else "  Yes"
+            no = "> No" if self.use_key_selected == 1 else "  No"
+
+            arcade.draw_text(
+                yes,
+                self.width / 2 - 50,
+                self.height / 2,
+                arcade.color.WHITE,
+                20
+            )
+
+            arcade.draw_text(
+                no,
+                self.width / 2 - 50,
+                self.height / 2 - 40,
+                arcade.color.WHITE,
+                20
+            )
 
     def on_update(self, delta_time):
         if self.state == "battle" and self.enemy_turn:
@@ -311,6 +371,11 @@ class Game(arcade.Window):
         ]
 
     def _update_explore(self, delta_time):
+        if self.message_specific_timer > 0:
+            self.message_specific_timer -= delta_time
+
+            if self.message_specific_timer <= 0:
+                self.message_specific = ""
         if self.message_timer > 0:
             self.message_timer -= delta_time
             if self.message_timer <= 0:
@@ -358,13 +423,20 @@ class Game(arcade.Window):
 
             self.map_switch_lock = False
         if self.player.center_y < 0 and self.current_map == "beach_2":
-            self.map_switch_lock = True
-            self.fade = 1.0
-            self.go_to_map("forest_2", "bottom")
-            self.map_switch_lock = False
+            if self.forest2_unlocked:
+                self.go_to_map("forest_2", "bottom")
+
+            elif self.quest_items.get("Castle Key", 0) > 0:
+                self.use_key_menu = True
+                self.use_key_selected = 0
+
+            else:
+                self.player.center_y = 10
+                self.message_specific = "The gate is locked."
+                self.message_specific_timer = 3
 
 
-        #top
+                #top
         if self.player.center_y > self.height and self.current_map == "forest_1":
             self.map_switch_lock = True
             self.fade = 1.0
@@ -380,13 +452,19 @@ class Game(arcade.Window):
         #right
 
         if self.player.center_x > 1550 and self.current_map == "forest_1":
-            self.map_switch_lock = True
 
-            self.fade = 1.0
+            if self.forest2_unlocked:
+                self.go_to_map("forest_2", "right")
 
-            self.go_to_map("forest_2", "right")
+            elif self.quest_items.get("Castle Key", 0) > 0:
+                self.use_key_menu = True
+                self.use_key_selected = 0
 
-            self.map_switch_lock = False
+            else:
+                self.player.center_x = 1540
+                self.message_specific = "The gate is locked."
+                self.message_specific_timer = 3
+
         if self.player.center_x > 1550 and self.current_map == "beach":
             self.map_switch_lock = True
             self.fade = 1.0
@@ -411,6 +489,17 @@ class Game(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         self.keys_held.add(key)
+        if self.use_key_menu:
+            if key in (arcade.key.UP, arcade.key.I):
+                self.use_key_selected = 0
+            elif key in (arcade.key.DOWN, arcade.key.K):
+                self.use_key_selected = 1
+            elif key in (arcade.key.SPACE, arcade.key.ENTER):
+                if self.use_key_selected == 0:
+                    self.forest2_unlocked = True
+                    self.go_to_map("forest_2", "right")
+                self.use_key_menu = False
+            return
 
         if self.state == "level_up" and key == arcade.key.SPACE:
             self.state = "level_choice"
@@ -426,14 +515,10 @@ class Game(arcade.Window):
         if self.state == "pause":
 
             if key == arcade.key.UP:
-                self.pause_selected = (
-                                              self.pause_selected - 1
-                                      ) % len(ITEM_NAMES)
+                self.pause_selected = (self.pause_selected - 1) % len(ITEM_NAMES)
 
             elif key == arcade.key.DOWN:
-                self.pause_selected = (
-                                              self.pause_selected + 1
-                                      ) % len(ITEM_NAMES)
+                self.pause_selected = (self.pause_selected + 1) % len(ITEM_NAMES)
 
             elif key == arcade.key.SPACE:
 
